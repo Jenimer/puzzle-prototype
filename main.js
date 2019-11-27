@@ -1,4 +1,5 @@
-
+//disable buttons after they are clicked
+//enable buttons after the comparisons have been made
 light1 = document.getElementById('lt1')
 light2 = document.getElementById('lt2')
 light3 = document.getElementById('lt3')
@@ -8,6 +9,7 @@ button2 = document.getElementById('btn2')
 button3 = document.getElementById('btn3')
 button4 = document.getElementById('btn4')
 displayed = document.getElementById('lightValues')
+
 displayed.style.display = 'none'
 
 allLights = [
@@ -17,34 +19,15 @@ allLights = [
   light4
 ]
 
+allButtons = [
+  button1,
+  button2,
+  button3,
+  button4
+]
 
-button1.addEventListener('click', () => {
-  //randomize array in here pass popped value
-  clicky(allLights[0])//pass variable to randomize light value it can be done
-})
 
-button2.addEventListener('click', () => {
-  clicky(allLights[1])
-})
-
-button3.addEventListener('click', () => {
-  clicky(allLights[2])
-})
-
-button4.addEventListener('click', () => {
-  clicky(allLights[3])
-})
-
-clicky = (light) => {
-  value = light.getAttribute('value');
-  let node = document.createElement('li');
-  let textNode = document.createTextNode(value)
-  node.appendChild(textNode)
-  document.getElementById('lightValues').appendChild(node)
-  glow(light)
-  count()
-}
-
+//main function
 count = () => {
   let solutions = [
    1234,
@@ -60,8 +43,8 @@ count = () => {
   let convertedNumbers = [];
   let converted = Array.from(list);
   //converting data types from strings to integers
-  converted.forEach(element => {
-    item = element.innerText;
+  converted.forEach(e => {
+    item = e.innerText;
     numbers.push(item)
   });
 
@@ -69,8 +52,9 @@ count = () => {
     let number = parseInt(n);
     convertedNumbers.push(number);
   });
+  
   let thing = convertedNumbers.join('');
-  console.log(thing);
+ 
   
   //function that runs all comparisons, renders a result and clears
   //everything to be run until program is closed
@@ -82,54 +66,104 @@ count = () => {
 
       setTimeout(() => {
         right(allLights)
-        clearList(list);
+        clearList();
       }, 500);
-      setTimeout(() => {
-        revGlow()
-      }, 1200)
-    }else{
+      timer()
+
+    } else {
+
       setTimeout(() => {
         wrong(allLights);
-        clearList(list);
+        clearList();
       }, 500);
-      setTimeout(() => {
-        revGlow()
-      }, 1200)
+      timer()
     }
+    allButtons.map(b => {
+      b.disabled = false;
+    });
   }
 }
 
-clearList = (list) => {
-  i = 0;
-  while (list.length != 0) {
-    more = document.getElementsByTagName('li')[0];
-    more.parentNode.removeChild(more);
-    i++;
-    console.log(more)
-  }
+//clears the unordered list from the html
+clearList = () => {
+  first = document.querySelectorAll('li')[0];
+  second = document.querySelectorAll('li')[1];
+  third = document.querySelectorAll('li')[2];
+  fourth = document.querySelectorAll('li')[3];
+
+  allElements = [
+    first,
+    second,
+    third,
+    fourth
+  ];
+
+  allElements.map(e => {
+    e.parentNode.removeChild(e); 
+  });
+
 }
 
-
-glow = (light) => {
-  light.style.background = '#00d9ff'
+//what the light changes to when a button is clicked
+glow = (l) => {
+  l.style.background = '#00d9ff';
 }
 
+//the color the lights change to when the combination is correct
 right = (alllight) => {
-  alllight.map(light => {
-    light.style.background = 'lime'
-  })
+  alllight.map(l => {
+    l.style.background = 'lime';
+  });
 }
 
+//the color the lights change to when the combination is not correct
 wrong = (alllight) => {
-  alllight.map(light => {
-    light.style.background = 'red'
-  })
+  alllight.map(l => {
+    l.style.background = 'red';
+  });
 }
 
-
+//setting the light color to its original state
 revGlow = () => {
   allLights.map(l => {
-    l.style.background = 'white'
-  })
+    l.style.background = 'white';
+  });
 }
+
+//waits before the light color changes back to its original state
+timer = () => {
+  setTimeout(() => {
+    revGlow();
+  }, 1200);
+}
+
+//creates the text values of the html from the light values
+clicky = (light, button) => {
+  value = light.getAttribute('value');
+  let node = document.createElement('li');
+  let textNode = document.createTextNode(value);
+  node.appendChild(textNode);
+  document.getElementById('lightValues').appendChild(node);
+  glow(light);
+  button.disabled = true;
+  count();
+}
+
+
+
+button1.addEventListener('click', () => {
+  clicky(allLights[0], button1)//pass variable to randomize light value it can be done
+})
+
+button2.addEventListener('click', () => {
+  clicky(allLights[1], button2)
+})
+
+button3.addEventListener('click', () => {
+  clicky(allLights[2], button3)
+})
+
+button4.addEventListener('click', () => {
+  clicky(allLights[3], button4)
+})
 
